@@ -7,5 +7,12 @@
 <body>
 <h1 th:text="${message}"></h1>
 <p>login page!</p>
+
+<form method="post" action="/login" id="login_form">
+    <input type="text" name="user_id" placeholder="id">
+    <input type="password" name="user_pw" placeholder="password">
+    <input type="submit" value="Login">
+</form>
+
 </body>
 </html>
