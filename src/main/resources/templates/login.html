@@ -8,9 +8,9 @@
 <h1 th:text="${message}"></h1>
 <p>login page!</p>
 
-<form method="post" action="/login" id="login_form">
-    <input type="text" name="user_id" placeholder="id">
-    <input type="password" name="user_pw" placeholder="password">
+<form method="post" action="/login/auth" id="login_form">
+    <input type="text" id="user_id "name="user_id" placeholder="id">
+    <input type="password" id="user_pw" name="user_pw" placeholder="password">
     <input type="submit" value="Login">
 </form>
 
