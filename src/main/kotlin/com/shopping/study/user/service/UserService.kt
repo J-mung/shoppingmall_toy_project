@@ -8,19 +8,8 @@ import java.util.*
 @Service
 class UserService(private val userRepository: UserRepository) {
 
-    fun getUserById(id: Long): Optional<UserEntity> {
-        return userRepository.findById(id)
-    }
-
-    fun getUserByUserId(userId: String): Optional<UserEntity> {
-        return userRepository.findByUserId(userId)
-    }
-
-    fun createUser(user: UserEntity): UserEntity {
-        return userRepository.save(user)
-    }
-
-    fun deleteUser(id: Long) {
-        userRepository.deleteById(id)
+    fun authenticate(userId: String, passwd: String): Boolean {
+        val user = userRepository.findByUserId(userId)
+        return user.isPresent && user.get().passwd == passwd
     }
 }
