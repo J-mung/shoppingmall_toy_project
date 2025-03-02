@@ -3,6 +3,7 @@ package com.shopping.study.auth.service
 import com.shopping.study.auth.dto.loginDto
 import com.shopping.study.auth.dto.logoutDto
 import com.shopping.study.auth.repository.AuthRepository
+import com.shopping.study.util.annotations.LogExecutionTime
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,23 +11,19 @@ import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
-    val authRepository: AuthRepository
+    val authRepository: AuthRepository,
+    val helper : AuthServiceHelper
 ) {
-    fun checkLoginState(userId: String, request: HttpServletRequest): Boolean {
-
-        val session = request.getSession(false)
-        return session?.getAttribute("userId") == userId
-    }
-
+    @LogExecutionTime
     fun login(loginDto: loginDto, request: HttpServletRequest): ResponseEntity<Any> {
-        if (checkLoginState(loginDto.userId, request)) {
+        if (helper.checkLoginState(loginDto.userId, request)) {
             return ResponseEntity.ok(mapOf(
                 "message" to "Already login",
                 "userId" to loginDto.userId
             ))
         }
 
-        val authResult = this.authentication(loginDto)
+        val authResult = helper.authentication(loginDto)
 
         return when (authResult) {
             true -> {
@@ -48,18 +45,9 @@ class AuthService(
         }
     }
 
-    fun authentication(loginDto: loginDto): Boolean {
-        val user = authRepository.findByUserId(loginDto.userId)
-
-        if (user !== null && user.passwd == loginDto.userPw) {
-            return true
-        } else {
-            return false
-        }
-    }
-
+    @LogExecutionTime
     fun logout(logoutDto: logoutDto, request: HttpServletRequest): ResponseEntity<Map<String, String>> {
-        if (checkLoginState(logoutDto.userId, request)) {
+        if (helper.checkLoginState(logoutDto.userId, request)) {
             request.getSession().removeAttribute("userId")
 
             return ResponseEntity.ok().body(mapOf(

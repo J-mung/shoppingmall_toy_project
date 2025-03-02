@@ -28,3 +28,7 @@ spring:
   devtools:
     livereload:
       enabled: 'true'
+server:
+  servlet:
+    session:
+      persistent: false
