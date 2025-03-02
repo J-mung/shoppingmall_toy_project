@@ -1,0 +1,78 @@
+/out/production/resources/static/index.html
+### macOS 관련 ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Windows 관련 ###
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+### Kotlin 관련 ###
+*.iml
+*.class
+*.log
+*.jar
+*.war
+*.ear
+
+### Gradle 관련 ###
+.gradle/
+build/
+!gradle-wrapper.jar
+.gradle/
+gradlew
+gradlew.bat
+out/
+
+### IntelliJ IDEA 관련 ###
+.idea/
+*.iws
+*.ipr
+*.iwt
+*.ijx
+.idea_modules/
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
+*.rej
+*.class
+*.log
+
+### Eclipse 관련 ###
+.project
+.classpath
+.settings/
+
+### Maven 관련 ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+### Spring Boot 관련 ###
+/logs
+/log/
+!logs/.keep
+*.log
+nohup.out
+
+### JPA(Hibernate) 관련 ###
+*.h2.db
+*.mv.db
+
+### Thymeleaf 관련 ###
+*.html~
+
+### Git 관련 ###
+*.lock
+*.idx
+*.pack
+*.cache
+*.bak
