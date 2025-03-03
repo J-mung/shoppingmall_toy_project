@@ -3,6 +3,7 @@ package com.shopping.study.auth.controller
 import com.shopping.study.auth.dto.loginDto
 import com.shopping.study.auth.dto.logoutDto
 import com.shopping.study.auth.service.AuthService
+import com.shopping.study.util.annotations.AuthCheck
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -15,12 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody
 class AuthController(
     private val authService: AuthService
 ) {
+
     val loginPage: String = "login"
 
     /**
      * login 페이지 요청
      */
-    @GetMapping("/login")
+    @GetMapping("/loginpage")
     fun getLoginPage(model: Model): String {
         return loginPage
     }
@@ -29,6 +31,7 @@ class AuthController(
      * login 요청
      */
     @PostMapping("/login/auth")
+    @AuthCheck
     fun requestLogin(@RequestBody loginDto: loginDto, request: HttpServletRequest): ResponseEntity<Any> {
         return authService.login(loginDto, request)
     }
