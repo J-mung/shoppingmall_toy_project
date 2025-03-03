@@ -1,5 +1,6 @@
 package com.shopping.study.user.entity
 
+import com.shopping.study.user.dto.UserDto
 import jakarta.persistence.*
 
 @Entity
@@ -20,4 +21,12 @@ data class UserEntity(
 
     @Column(name = "user_name", nullable = false, length = 50)
     val userName: String
-)
+) {
+    fun toDto(): UserDto {
+        return UserDto(
+            id = this.id ?: 0L,
+            userId = this.userId,
+            email = this.email,
+            userName = this.userName)
+    }
+}
