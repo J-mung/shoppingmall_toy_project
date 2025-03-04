@@ -2,8 +2,8 @@ package com.shopping.study.auth.service
 
 import com.shopping.study.auth.dto.loginDto
 import com.shopping.study.auth.dto.logoutDto
-import com.shopping.study.auth.repository.AuthRepository
 import com.shopping.study.util.annotations.AuthCheck
+import com.shopping.study.util.annotations.BeforeAuthCheck
 import com.shopping.study.util.annotations.LogExecutionTime
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus

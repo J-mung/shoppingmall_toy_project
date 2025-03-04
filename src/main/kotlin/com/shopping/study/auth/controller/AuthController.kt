@@ -4,6 +4,7 @@ import com.shopping.study.auth.dto.loginDto
 import com.shopping.study.auth.dto.logoutDto
 import com.shopping.study.auth.service.AuthService
 import com.shopping.study.util.annotations.AuthCheck
+import com.shopping.study.util.annotations.BeforeAuthCheck
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -31,12 +32,13 @@ class AuthController(
      * login 요청
      */
     @PostMapping("/login/auth")
-    @AuthCheck
+    @BeforeAuthCheck
     fun requestLogin(@RequestBody loginDto: loginDto, request: HttpServletRequest): ResponseEntity<Any> {
         return authService.login(loginDto, request)
     }
 
     @PostMapping("/logout")
+    @BeforeAuthCheck
     fun requestLogout(@RequestBody logoutDto: logoutDto, request: HttpServletRequest): ResponseEntity<Map<String, String>> {
         return authService.logout(logoutDto, request)
     }
