@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component
 class AuthCheckAspect(private val session: HttpSession) {
     private val logger = LoggerFactory.getLogger(AuthCheckAspect::class.java)
 
-    // @checkLogin 붙은 메서드만 aop 적용
-    @Before("@annotation(com.shopping.study.user.aspect.checkLogin)")
+    // @LoginRequired 붙은 메서드만 aop 적용
+    @Before("@annotation(com.shopping.study.user.aspect.LoginRequired)")
     fun checkLogin(joinPoint: org.aspectj.lang.JoinPoint) {
         val loggedInUser = session.getAttribute("userId")
         val methodName = joinPoint.signature.name
