@@ -12,6 +12,8 @@ import org.aspectj.lang.annotation.Before
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
+import com.shopping.study.util.annotations.AuthCheck
+import com.shopping.study.util.annotations.CheckLoginState
 
 @Aspect
 @Component
@@ -20,7 +22,7 @@ class AuthCheckAspect(
     private val helper: AuthServiceHelper,
 ) {
 
-    @Around("@annotation(com.shopping.study.util.annotations.AuthCheck)")
+    @Around("@annotation(AuthCheck)")
     fun checkLoginState(joinPoint: ProceedingJoinPoint): Any {
         logger.info("> 로그인 상태 체크 실행: {}", joinPoint.signature.name)
 
@@ -42,8 +44,8 @@ class AuthCheckAspect(
         return joinPoint.proceed()
     }
 
-    @Before("@annotation(com.shopping.study.util.annotations.BeforeAuthCheck)")
-    fun beforeCheckLog(joinPoint: JoinPoint) {
+    @Before("@annotation(com.shopping.study.util.annotations.CheckLoginState)")
+    fun checkLoginState(joinPoint: JoinPoint) {
         logger.info("> 로그인 상태 체크 실행: {}", joinPoint.signature.name)
 
         val sessionUserId = request.session.getAttribute("userId") as? String
