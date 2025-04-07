@@ -1,7 +1,7 @@
 package com.shopping.study.product.entity
 
-import jakarta.persistence.*
 import com.shopping.study.category.entity.CategoryEntity
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "products")
@@ -21,5 +21,9 @@ data class ProductEntity(
     val price: Int,
 
     @Column(nullable = false)
-    val stock: Int
+    val stock: Int,
+
+    // 추가된 컬럼: detail – 자식 객체의 속성을 JSON 문자열로 저장
+    @Column(name = "detail", nullable = false, length = 128)
+    val detail: String
 )

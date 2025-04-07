@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>상품 목록</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+  <h1>상품 목록</h1>
+  <div th:each="category : ${categories}">
+    <h2 th:text="${category.categoryName}">카테고리 이름</h2>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>상품 ID</th>
+        <th>상품명</th>
+        <th>가격</th>
+        <th>재고</th>
+<!--        <th>상세 정보 (JSON)</th>-->
+        <th>편집</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="product : ${category.products}">
+        <td th:text="${product.id}">상품 ID</td>
+        <td th:text="${product.productName}">상품명</td>
+        <td th:text="${product.price}">가격</td>
+        <td th:text="${product.stock}">재고</td>
+<!--        <td th:text="${product.detail}">상세정보</td>-->
+        <td>
+          <!-- 편집 버튼 (data-* 속성으로 상품 ID, detail 값 전달) -->
+          <button type="button"
+                  class="btn btn-sm btn-primary product-edit-btn"
+                  th:data-id="${product.id}"
+                  th:data-detail="${product.detail}">
+            편집
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 모달 (Bootstrap) -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+     aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document"><!-- modal-lg: 좀 더 큰 모달 -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">상품 상세 정보 편집</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="닫기">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Key-Value 편집 영역 -->
+        <div id="kvContainer"></div>
+        <!-- 새 항목 추가 버튼 -->
+        <button type="button" class="btn btn-outline-secondary" id="addFieldBtn">+ 항목 추가</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" id="saveDetailBtn">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS: jQuery, Popper, Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  let selectedProductId = null;
+
+  // [도움 함수] 하나의 Key-Value 행(입력 필드 + 삭제 버튼) 생성
+  function createKVRow(keyValueObj = { key: '', value: '' }) {
+      // keyValueObj = { key: 'brand', value: 'Nike' } 식
+      const rowDiv = document.createElement('div');
+      rowDiv.classList.add('kv-row');
+
+      const keyInput = document.createElement('input');
+      keyInput.type = 'text';
+      keyInput.classList.add('form-control');
+      keyInput.placeholder = 'Key';
+      keyInput.style.flex = '1';
+      keyInput.value = keyValueObj.key;
+
+      const valueInput = document.createElement('input');
+      valueInput.type = 'text';
+      valueInput.classList.add('form-control');
+      valueInput.placeholder = 'Value';
+      valueInput.style.flex = '2';
+      valueInput.value = keyValueObj.value;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+      removeBtn.textContent = '삭제';
+      removeBtn.addEventListener('click', () => {
+          rowDiv.remove();
+      });
+
+      rowDiv.appendChild(keyInput);
+      rowDiv.appendChild(valueInput);
+      rowDiv.appendChild(removeBtn);
+
+      return rowDiv;
+  }
+
+  // [1] "편집" 버튼 클릭 → 모달 오픈, JSON 파싱 → Key-Value 행 생성
+  document.addEventListener("DOMContentLoaded", function() {
+      const editButtons = document.querySelectorAll(".product-edit-btn");
+      editButtons.forEach(btn => {
+          btn.addEventListener("click", event => {
+              event.preventDefault();
+              selectedProductId = btn.getAttribute("data-id");
+              const detail = btn.getAttribute("data-detail");
+
+              // 모달 열기 전에 기존 행 초기화
+              const kvContainer = document.getElementById("kvContainer");
+              kvContainer.innerHTML = '';
+
+              // detail JSON 파싱
+              try {
+                  const parsed = JSON.parse(detail);
+                  // parsed가 객체(단순 key-value)라고 가정
+                  for (const [k, v] of Object.entries(parsed)) {
+                      const row = createKVRow({ key: k, value: String(v) });
+                      kvContainer.appendChild(row);
+                  }
+              } catch (e) {
+                  // 파싱 실패: 빈 객체로 간주
+              }
+
+              // 모달 표시
+              $('#editModal').modal('show');
+          });
+      });
+
+      // [2] "+ 항목 추가" 버튼
+      document.getElementById("addFieldBtn").addEventListener("click", function() {
+          const kvContainer = document.getElementById("kvContainer");
+          const row = createKVRow();
+          kvContainer.appendChild(row);
+      });
+
+      // [3] "저장" 버튼 클릭 → Key-Value 행을 JSON으로 직렬화 → PATCH 요청
+      document.getElementById("saveDetailBtn").addEventListener("click", function() {
+          const kvContainer = document.getElementById("kvContainer");
+          const kvRows = kvContainer.querySelectorAll(".kv-row");
+          let newDetailObj = {};
+
+          kvRows.forEach(row => {
+              const inputs = row.querySelectorAll("input");
+              const key = inputs[0].value.trim();
+              const value = inputs[1].value.trim();
+              if (key.length > 0) {
+                  newDetailObj[key] = value;
+              }
+          });
+
+          // JSON 직렬화
+          const newDetailJson = JSON.stringify(newDetailObj);
+
+          fetch(`/api/products/${selectedProductId}/detail`, {
+              method: 'PATCH',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ detail: newDetailJson })
+          })
+          .then(response => {
+              if (response.ok) {
+                  // 성공 시 새로고침
+                  location.reload();
+              } else {
+                  alert("업데이트 실패");
+              }
+          })
+          .catch(err => {
+              console.error(err);
+              alert("업데이트 중 오류 발생");
+          });
+      });
+  });
+</script>
+</body>
+</html>
