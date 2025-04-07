@@ -1,11 +1,10 @@
 package com.shopping.study.user.entity
 
-import com.shopping.study.user.dto.UserDto
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")
-data class UserEntity(
+class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
@@ -22,11 +21,15 @@ data class UserEntity(
     @Column(name = "user_name", nullable = false, length = 50)
     val userName: String
 ) {
-    fun toDto(): UserDto {
-        return UserDto(
-            id = this.id ?: 0L,
-            userId = this.userId,
-            email = this.email,
-            userName = this.userName)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+
+        other as UserEntity
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id?.hashCode() ?: 0
     }
 }

@@ -6,10 +6,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 @Aspect
-@Component
+@Component //빈객체는 스프링이 생성해서 주입해주는것 (스프링이생성한거니 딱 한번 생성)
 class AuthCheckAspect(private val session: HttpSession) {
     private val logger = LoggerFactory.getLogger(AuthCheckAspect::class.java)
 
+    // 의미 없는 그런
     companion object {
         private const val SESSION_USER_ID = "userId"
     }
