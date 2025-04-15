@@ -1,7 +1,7 @@
 package com.shopping.study.util.aspects
 
 import com.shopping.study.auth.dto.loginDto
-import com.shopping.study.auth.service.AuthServiceHelper
+import com.shopping.study.auth.service.AuthService
 import com.shopping.study.util.exception.custome.AlreadyLoggedInException
 import jakarta.servlet.http.HttpServletRequest
 import org.aspectj.lang.JoinPoint
@@ -12,14 +12,12 @@ import org.aspectj.lang.annotation.Before
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
-import com.shopping.study.util.annotations.AuthCheck
-import com.shopping.study.util.annotations.CheckLoginState
 
 @Aspect
 @Component
 class AuthCheckAspect(
     private val request: HttpServletRequest,
-    private val helper: AuthServiceHelper,
+    private val authService: AuthService,
 ) {
 
     @Around("@annotation(AuthCheck)")
@@ -29,7 +27,7 @@ class AuthCheckAspect(
         val sessionUserId = request.session.getAttribute("userId") as? String
         logger.info("> userId: {}", sessionUserId ?: "There is no userId in session")
 
-        if (sessionUserId != null && helper.checkLoginState(sessionUserId, request)) {
+        if (sessionUserId != null && authService.checkLoginState(sessionUserId, request)) {
             return ResponseEntity.ok(
                 mapOf(
                     "message" to "Already login",
@@ -51,7 +49,7 @@ class AuthCheckAspect(
         val sessionUserId = request.session.getAttribute("userId") as? String
         logger.info("> userId: {}", sessionUserId ?: "There is no userId in session")
 
-        if (sessionUserId != null && helper.checkLoginState(sessionUserId, request)) {
+        if (sessionUserId != null && authService.checkLoginState(sessionUserId, request)) {
             throw AlreadyLoggedInException("이미 로그인한 사용자")
         }
 
