@@ -1,5 +1,7 @@
 package com.shopping.study.auth.controller
 
+import com.shopping.study.auth.dto.LoginResponseDto
+import com.shopping.study.auth.dto.LogoutResponseDto
 import com.shopping.study.auth.dto.loginDto
 import com.shopping.study.auth.dto.logoutDto
 import com.shopping.study.auth.service.AuthService
@@ -34,12 +36,12 @@ class AuthController(
      */
     @PostMapping("/login")
     @CheckLoginState
-    fun handleLoginRequest(@RequestBody loginDto: loginDto, request: HttpServletRequest): ResponseEntity<Any> {
+    fun handleLoginRequest(@RequestBody loginDto: loginDto, request: HttpServletRequest): ResponseEntity<LoginResponseDto> {
         return authService.login(loginDto, request)
     }
 
     @PostMapping("/logout")
-    fun handleLogoutRequest(@RequestBody logoutDto: logoutDto, request: HttpServletRequest): ResponseEntity<Map<String, String>> {
+    fun handleLogoutRequest(@RequestBody logoutDto: logoutDto, request: HttpServletRequest): ResponseEntity<LogoutResponseDto> {
         return authService.logout(logoutDto, request)
     }
 }
