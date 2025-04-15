@@ -27,16 +27,18 @@ class AuthService(
                 session.setMaxInactiveInterval(60 * 30);
 
                 ResponseEntity.ok(LoginResponseDto (
-                    message = "Login success!",
-                    userId = loginDto.userId
+                    status = HttpStatus.OK,
+                    errorCode = "",
+                    data = loginDto.userId
                 ))
             }
 
             else -> {
-                ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                ResponseEntity.ok()
                     .body(LoginResponseDto (
-                        message = "Login failed",
-                        userId = "-"
+                        status = HttpStatus.UNAUTHORIZED,
+                        errorCode = "Login fail",
+                        data = loginDto.userId
                     ))
             }
         }
@@ -48,14 +50,16 @@ class AuthService(
             request.getSession().removeAttribute("userId")
 
             return ResponseEntity.ok().body(LogoutResponseDto (
-                message = "Logout success!",
-                userId = logoutDto.userId
+                status = HttpStatus.OK,
+                errorCode = "",
+                data = logoutDto.userId
             ))
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.ok()
                 .body(LogoutResponseDto (
-                    message = "Invalid logout request",
-                    userId = "-"
+                    status = HttpStatus.BAD_REQUEST,
+                    errorCode = "Invalid logout request",
+                    data = ""
                 ))
         }
     }
