@@ -34,12 +34,12 @@ class AuthController(
      */
     @PostMapping("/login")
     @CheckLoginState
-    fun login(@RequestBody loginDto: loginDto, request: HttpServletRequest): ResponseEntity<Any> {
+    fun handleLoginRequest(@RequestBody loginDto: loginDto, request: HttpServletRequest): ResponseEntity<Any> {
         return authService.login(loginDto, request)
     }
 
     @PostMapping("/logout")
-    fun requestLogout(@RequestBody logoutDto: logoutDto, request: HttpServletRequest): ResponseEntity<Map<String, String>> {
+    fun handleLogoutRequest(@RequestBody logoutDto: logoutDto, request: HttpServletRequest): ResponseEntity<Map<String, String>> {
         return authService.logout(logoutDto, request)
     }
 }
