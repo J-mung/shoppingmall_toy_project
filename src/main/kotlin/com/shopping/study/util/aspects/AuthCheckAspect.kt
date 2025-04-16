@@ -1,5 +1,6 @@
 package com.shopping.study.util.aspects
 
+import com.shopping.study.auth.dto.LoginResponseDto
 import com.shopping.study.auth.dto.loginDto
 import com.shopping.study.auth.service.AuthService
 import com.shopping.study.util.exception.custome.AlreadyLoggedInException
@@ -9,7 +10,9 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 
@@ -19,6 +22,7 @@ class AuthCheckAspect(
     private val request: HttpServletRequest,
     private val authService: AuthService,
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Around("@annotation(AuthCheck)")
     fun checkLoginState(joinPoint: ProceedingJoinPoint): Any {
@@ -28,12 +32,12 @@ class AuthCheckAspect(
         logger.info("> userId: {}", sessionUserId ?: "There is no userId in session")
 
         if (sessionUserId != null && authService.checkLoginState(sessionUserId, request)) {
-            return ResponseEntity.ok(
-                mapOf(
-                    "message" to "Already login",
-                    "userId" to sessionUserId
-                )
-            )
+            return ResponseEntity.ok()
+                .body(LoginResponseDto(
+                    status = HttpStatus.BAD_REQUEST,
+                    errorCode = "Already login",
+                    data = sessionUserId
+                ))
         }
 
         val loginDto = joinPoint.args.find { it is loginDto } as? loginDto
@@ -55,9 +59,5 @@ class AuthCheckAspect(
 
         val loginDto = joinPoint.args.find { it is loginDto } as? loginDto
         logger.info("> 로그인 필요한 사용자: {}", loginDto?.userId)
-    }
-
-    companion object {
-        val logger = LoggerFactory.getLogger(AuthCheckAspect::class.java)
     }
 }

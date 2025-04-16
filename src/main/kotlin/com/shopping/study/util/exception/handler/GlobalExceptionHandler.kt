@@ -2,6 +2,7 @@ package com.shopping.study.util.exception.handler
 
 import com.shopping.study.util.exception.custome.AlreadyLoggedInException
 import com.shopping.study.util.exception.dto.ErrorResponseDto
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -18,8 +19,8 @@ import java.time.LocalDateTime
 class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     companion object {
         const val TRACE = "trace"
-        val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
     }
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Override
     protected override fun handleExceptionInternal(
