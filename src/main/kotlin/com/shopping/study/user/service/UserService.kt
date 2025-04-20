@@ -27,7 +27,6 @@ class UserService(
         val userDto = userMapper.toDto(user)
         session.setAttribute("userId", userDto.userId)
         return LoginResponseDto(
-            userId = loginRequestDto.userId,
             message = "로그인 성공",
             user = userDto
         )
