@@ -1,2 +1,7 @@
-.idea/** 
+.idea/
 local.properties
+.gradle/
+
+.idea/vcs.xml
+build/
+/out/
