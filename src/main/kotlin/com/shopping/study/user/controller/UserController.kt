@@ -1,5 +1,6 @@
 package com.shopping.study.user.controller
 
+import com.shopping.study.user.aspect.LoginRequired
 import com.shopping.study.user.dto.LoginRequestDto
 import com.shopping.study.user.service.UserService
 import jakarta.servlet.http.HttpSession
@@ -21,6 +22,7 @@ class UserController(
 
     // 로그인 처리
     @PostMapping("/login")
+    @LoginRequired
     fun login(@ModelAttribute loginRequestDto: LoginRequestDto): String {
         val response = userService.authenticate(loginRequestDto)
         return if (response.user != null) {
