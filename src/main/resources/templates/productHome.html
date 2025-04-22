@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome ProductHome</title>
+</head>
+<body>
+<h1 th:text="${message}"></h1>
+<p>product page!</p>
+<form>
+  <label>검색어</label>
+  <input type="text" id="userSearch" />
+</form>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+  window.onload = () => {
+    searchProduct();
+  };
+
+  async function searchProduct() {
+    const userSearchInput = document.getElementById("userSearch");
+    const userSearch = userSearchInput ? userSearchInput.value : "";
+
+    try {
+      const response = await axios({
+        url: '/rest/product/search',
+        method: 'post',
+        data: {
+          userSearch: userSearch
+        }
+      });
+      console.log(response);
+    } catch (error) {
+      console.error("검색 중 오류 발생:", error);
+    }
+  }
+</script>
+
+</html>
