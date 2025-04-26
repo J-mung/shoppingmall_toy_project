@@ -12,20 +12,20 @@ import jakarta.persistence.Table
 class ProductEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Int? = 0,
+    var id: Int? = 0,
 
     @Column(name = "category_id")
-    val categoryId: Int? = 0,
+    var categoryId: Int? = 0,
 
     @Column(name = "product_name", length = 50)
-    val productName: String? = "",
+    var productName: String? = "",
 
     @Column(name = "price")
-    val price: Int? = 0,
+    var price: Int? = 0,
 
     @Column(name = "stock")
-    val stock: Int? = 0,
+    var stock: Int? = 0,
 
     @Column(name = "detail", length = 128)
-    val detail: String? = ""
+    var detail: String? = ""
 )
