@@ -9,8 +9,8 @@ data class ShoesDto(
     override var productName: String,
     override var price: Int,
     override var stock: Int?,
-    var size: Int?,
-    var color: String?,
+    var size: Int = 0,
+    var color: String = "",
 ): ProductInterface, Serializable {
     fun setDetail(detailJson: String) {
         val objectMapper = ObjectMapper()
