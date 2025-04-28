@@ -21,4 +21,19 @@ class ProductService (
 
         return allProductList
     }
+
+    /**
+     * 카테고리 목록 내에서 검색
+     */
+    fun getCategoryProductList(categoryId: Int, productName: String): List<ProductDto> {
+        val productEntity = productRepository.findAllByCategoryId(categoryId)
+        val searchResult = mutableListOf<ProductDto>()
+            productEntity.map { product ->
+            if (product.productName.contains(productName)) {
+                searchResult.add(productMapper.toDto(product))
+            }
+        }
+
+        return searchResult
+    }
 }
