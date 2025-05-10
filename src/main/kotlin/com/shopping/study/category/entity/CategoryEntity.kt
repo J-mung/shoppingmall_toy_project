@@ -12,7 +12,8 @@ import jakarta.persistence.Table
 class CategoryEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int,
+    @Column(name = "id")
+    var categoryId: Int,
 
     @Column(name = "name", length = 50)
     var categoryName: String
